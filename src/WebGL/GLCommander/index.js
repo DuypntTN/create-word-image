@@ -3,6 +3,7 @@ class GLCommander {
     this.gl = gl;
     this.canvas = canvas;
     this.textSize = 20;
+    this.canvasList = [];
   }
   clear = (r, g, b, a) => {
     console.log("Clearing canvas: ", this.canvas.width);
@@ -15,38 +16,105 @@ class GLCommander {
     let image = document.getElementById("source");
     let text = document.getElementById("text");
     if (image === null) return;
-    this.gl.drawImage(image, x_offset, y_offset, this.canvas.width, this.canvas.height);
-    let fontSize = this.textSize;
-    let textBox = {
-      x: x_offset,
-      y: y_offset,
-      width: this.canvas.width,
-      height: this.canvas.height,
-    };
-    let textLength = text.innerText.length;
-    let index = 0;
-    let stringArr = [];
-    let string = "";
-    while (index < textLength) {
-      string += text.innerText[index];
-      let textWidth = this.gl.measureText(string).width;
-      if (textWidth > textBox.width) {
-        stringArr.push(string);
-        string = "";
+
+    if (text) {
+      let dataArray = text.innerText.split("\n");
+      if (dataArray.length > 1) {
+        console.log("data array: ", dataArray);
+      } else {
+        dataArray.push(text.innerText);
       }
-      index++;
-    }
-    stringArr.push(string);
-    for (let i = 0; i < stringArr.length; i++) {
-      this.drawText(stringArr[i], textBox.x, textBox.y + fontSize * (i + 1));
+      let canvasList = [];
+      this.gl.drawImage(
+        image,
+        x_offset,
+        y_offset,
+        this.canvas.width,
+        this.canvas.height
+      );
+      let fontSize = this.textSize;
+      let textBox = {
+        x: x_offset,
+        y: y_offset,
+        width: this.canvas.width,
+        height: this.canvas.height,
+      };
+      let textLength = dataArray[0].length;
+      let index = 0;
+      let stringArr = [];
+      let string = "";
+      while (index < textLength) {
+        string += dataArray[0][index];
+        let textWidth = this.gl.measureText(string).width;
+        if (textWidth > textBox.width) {
+          stringArr.push(string);
+          string = "";
+        }
+        index++;
+      }
+      stringArr.push(string);
+      for (let i = 0; i < stringArr.length; i++) {
+        this.drawText(stringArr[i], textBox.x, textBox.y + fontSize * (i + 1));
+      }
+      canvasList.push(this.canvas);
+      for (let i = 1; i < dataArray.length; i++) {
+        let newCanvas = document.createElement("canvas");
+        newCanvas.width = this.canvas.width;
+        newCanvas.height = this.canvas.height;
+        let newGl = newCanvas.getContext("2d");
+        newGl.drawImage(
+          image,
+          x_offset,
+          y_offset,
+          this.canvas.width,
+          this.canvas.height
+        );
+        let fontSize = this.textSize;
+        let textBox = {
+          x: x_offset,
+          y: y_offset,
+          width: this.canvas.width,
+          height: this.canvas.height,
+        };
+        let textLength = dataArray[i].length;
+        let index = 0;
+        let stringArr = [];
+        let string = "";
+        while (index < textLength) {
+          string += dataArray[i][index];
+          let textWidth = newGl.measureText(string).width;
+          if (textWidth > textBox.width) {
+            stringArr.push(string);
+            string = "";
+          }
+          index++;
+        }
+        stringArr.push(string);
+        for (let i = 0; i < stringArr.length; i++) {
+          // this.drawText(
+          //   stringArr[i],
+          //   textBox.x,
+          //   textBox.y + fontSize * (i + 1)
+          // );
+          newGl.font = `${this.textSize}px Arial`;
+          newGl.fillText(
+            stringArr[i],
+            textBox.x,
+            textBox.y + fontSize * (i + 1)
+          );
+        }
+        canvasList.push(newCanvas.toDataURL());
+      }
+      this.canvasList = canvasList;
     }
   }
   saveCanvasAsImage = () => {
-    const dataURL = this.canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = "my-image.png";
-    link.href = dataURL;
-    link.click();
+    for (let i = 0; i < this.canvasList.length; i++) {
+      const link = document.createElement("a");
+      link.download = `image${i}.png`;
+      link.href = this.canvasList[i];
+      link.click();
+    }
   };
   setTextSize = (size) => {
     this.textSize = size;

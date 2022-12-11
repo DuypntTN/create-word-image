@@ -78,7 +78,6 @@ export default class App extends Component {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                width: "100%",
               }}
             >
               <img
@@ -142,7 +141,6 @@ export default class App extends Component {
                 }}
                 value={this.state.text}
               />
-
               <p id="text" style={{ display: "none" }}>
                 {this.state.text}
               </p>
@@ -157,11 +155,15 @@ export default class App extends Component {
                   const file = e.target.files[0];
                   const reader = new FileReader();
                   reader.onload = (e) => {
+                    console.log(e.target.result)
                     this.setState({ text: e.target.result });
                   };
                   reader.readAsText(file);
                 }}
               />
+              <p id="text" style={{ display: "none" }}>
+                {this.state.text}
+              </p>
             </div>
           )}
 
