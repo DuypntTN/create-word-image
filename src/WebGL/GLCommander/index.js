@@ -4,9 +4,9 @@ class GLCommander {
     this.canvas = canvas;
     this.textSize = 20;
     this.canvasList = [];
+    this.font = "Arial";
   }
   clear = (r, g, b, a) => {
-    console.log("Clearing canvas: ", this.canvas.width);
     this.gl.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.gl.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
     this.gl.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -19,11 +19,6 @@ class GLCommander {
 
     if (text) {
       let dataArray = text.innerText.split("\n");
-      if (dataArray.length > 1) {
-        console.log("data array: ", dataArray);
-      } else {
-        dataArray.push(text.innerText);
-      }
       let canvasList = [];
       this.gl.drawImage(
         image,
@@ -56,8 +51,7 @@ class GLCommander {
       for (let i = 0; i < stringArr.length; i++) {
         this.drawText(stringArr[i], textBox.x, textBox.y + fontSize * (i + 1));
       }
-      canvasList.push(this.canvas);
-      for (let i = 1; i < dataArray.length; i++) {
+      for (let i = 0; i < dataArray.length; i++) {
         let newCanvas = document.createElement("canvas");
         newCanvas.width = this.canvas.width;
         newCanvas.height = this.canvas.height;
@@ -91,12 +85,8 @@ class GLCommander {
         }
         stringArr.push(string);
         for (let i = 0; i < stringArr.length; i++) {
-          // this.drawText(
-          //   stringArr[i],
-          //   textBox.x,
-          //   textBox.y + fontSize * (i + 1)
-          // );
-          newGl.font = `${this.textSize}px Arial`;
+
+          newGl.font = `${this.textSize}px ${this.font}`;
           newGl.fillText(
             stringArr[i],
             textBox.x,
@@ -111,7 +101,7 @@ class GLCommander {
   saveCanvasAsImage = () => {
     for (let i = 0; i < this.canvasList.length; i++) {
       const link = document.createElement("a");
-      link.download = `image${i}.png`;
+      link.download = new Date().toISOString() + ".png";
       link.href = this.canvasList[i];
       link.click();
     }
@@ -119,9 +109,16 @@ class GLCommander {
   setTextSize = (size) => {
     this.textSize = size;
   };
+  setFont = (font) => {
+    this.font = font;
+  }
   drawText(text, x, y) {
-    this.gl.font = `${this.textSize}px Arial`;
+    this.gl.font = `${this.textSize}px ${this.font}`;
     this.gl.fillText(text, x, y);
+  }
+  setSize(width, height) {
+    this.canvas.width = width;
+    this.canvas.height = height;
   }
 }
 const GLC = new GLCommander();

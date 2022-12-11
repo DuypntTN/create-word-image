@@ -19,21 +19,30 @@ export default class WebGL extends Component {
       this.props.width !== this.state.width ||
       this.props.height !== this.state.height
     ) {
-      this.setState({ width: this.props.width, height: this.props.height });
+      // this.setState({ width: this.props.width, height: this.props.height });
       init("#webgl");
     }
-    Update()
+    Update();
   }
   render() {
     return (
-      <canvas
-        id="webgl"
-        width={this.state.width}
-        height={this.state.height}
+      <div
         style={{
-          overflowY:"auto"
+          width: 500,
+          height: 400,
+          overflowY: "auto",
+          alignSelf: "center",
         }}
-      />
+      >
+        <canvas
+          id="webgl"
+          width={this.state.width}
+          height={this.state.height}
+          style={{
+            overflowY: "auto",
+          }}
+        />
+      </div>
     );
   }
 }

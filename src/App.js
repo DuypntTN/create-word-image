@@ -37,6 +37,7 @@ export default class App extends Component {
       TEXT: 1,
       FILE_TXT: 2,
     };
+    this.FONTS = ["Arial", "Times New Roman", "Courier New"];
     this.state = {
       checked: false,
       src: "",
@@ -46,13 +47,20 @@ export default class App extends Component {
       textArr: [],
       textSize: 16,
       disable: true,
-      typeInput: this.TYPE_INPUT.TEXT,
+      typeInput: this.TYPE_INPUT.FILE_TXT,
+      font: "Arial",
     };
   }
   componentDidMount() {}
   componentDidUpdate() {
     if (this.state.textSize !== GLC.textSize) {
       GLC.setTextSize(this.state.textSize);
+    }
+    if (this.state.height !== GLC.height || this.state.width !== GLC.width) {
+      GLC.setSize(this.state.width, this.state.height);
+    }
+    if (this.state.font !== GLC.font) {
+      GLC.setFont(this.state.font);
     }
   }
   render() {
@@ -63,14 +71,27 @@ export default class App extends Component {
 
         <Container>
           {/*Select type input*/}
-
+          <Label>Chọn background</Label>
           {this.state.src !== "" ? (
-            <img
-              src={this.state.src}
-              id="source"
-              width={this.state.width}
-              alt="ảnh"
-            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 500,
+                height: 400,
+                alignSelf: "center",
+                overflowY: "auto",
+              }}
+            >
+              <img
+                src={this.state.src}
+                id="source"
+                width={this.state.width}
+                alt="ảnh"
+              />
+            </div>
           ) : (
             <div
               style={{
@@ -103,6 +124,8 @@ export default class App extends Component {
                 let nature_height = img.naturalHeight;
                 this.setState({
                   src: e.target.result,
+                  // width: 300,
+                  // height: 300 * (nature_height / nature_width),
                   width: nature_width,
                   height: nature_height,
                   disable: false,
@@ -121,6 +144,7 @@ export default class App extends Component {
             }}
             style={{
               alignSelf: "center",
+              marginBottom: 10,
             }}
           >
             <Dropdown.Item eventKey={this.TYPE_INPUT.TEXT}>
@@ -148,19 +172,22 @@ export default class App extends Component {
           ) : (
             <div>
               <Label>File text</Label>
-              <input
-                type="file"
-                accept=".txt"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  const reader = new FileReader();
-                  reader.onload = (e) => {
-                    console.log(e.target.result)
-                    this.setState({ text: e.target.result });
-                  };
-                  reader.readAsText(file);
-                }}
-              />
+              <div>
+                <input
+                  type="file"
+                  accept=".txt"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      console.log(e.target.result);
+                      this.setState({ text: e.target.result });
+                    };
+                    reader.readAsText(file);
+                  }}
+                />
+              </div>
+
               <p id="text" style={{ display: "none" }}>
                 {this.state.text}
               </p>
@@ -178,8 +205,27 @@ export default class App extends Component {
               this.setState({ textSize: e.target.value });
             }}
           />
-          {/*input text inner image*/}
-
+          <Label>Select font</Label>
+          <DropdownButton
+            id="dropdown-basic-button"
+            title={this.state.font}
+            onSelect={(e) => {
+              console.log("font", e);
+              this.setState({ font: e });
+            }}
+            style={{
+              alignSelf: "center",
+              marginBottom: 10,
+            }}
+          >
+            {this.FONTS.map((font, index) => {
+              return (
+                <Dropdown.Item eventKey={font} key={index}>
+                  {font}
+                </Dropdown.Item>
+              );
+            })}
+          </DropdownButton>
           {/*render image*/}
           <WebGL
             width={this.state.width}
