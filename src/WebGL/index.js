@@ -1,48 +1,33 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
+import { Label } from "../App";
+import Init from "./Init";
 import init from "./Init";
 import Update from "./Update";
 
-export default class WebGL extends Component {
-  constructor(props) {
-    super(props);
-    this.props = props;
-    this.state = {
-      width: this.props.width,
-      height: this.props.height,
-    };
-  }
-  componentDidMount() {
-    init("#webgl");
-  }
-  componentDidUpdate() {
-    if (
-      this.props.width !== this.state.width ||
-      this.props.height !== this.state.height
-    ) {
-      // this.setState({ width: this.props.width, height: this.props.height });
-      init("#webgl");
-    }
-    Update();
-  }
-  render() {
-    return (
-      <div
+const WebGL = ({ width = 0, height = 0 }) => {
+  useEffect(() => {
+    Init("#webgl");
+  }, []);
+  return (
+    <div
+      style={{
+        width: 500,
+        height: 'auto',
+        overflowY: "auto",
+        alignSelf: "center",
+      }}
+    >
+      <Label>Kết quả</Label>
+      <canvas
+        id="webgl"
+        width={width}
+        height={height}
         style={{
-          width: 500,
-          height: 400,
-          overflowY: "auto",
-          alignSelf: "center",
+          border: "1px solid red",
         }}
-      >
-        <canvas
-          id="webgl"
-          width={this.state.width}
-          height={this.state.height}
-          style={{
-            overflowY: "auto",
-          }}
-        />
-      </div>
-    );
-  }
-}
+      />
+    </div>
+  );
+};
+
+export default WebGL;
