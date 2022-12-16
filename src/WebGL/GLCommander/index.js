@@ -5,13 +5,19 @@ class GLCommander {
     this.textSize = 20;
     this.canvasList = [];
     this.font = "Arial";
+    this.x_offset = 0;
+    this.y_offset = 0;
+    this.x_text = 0;
+    this.y_text = 0;
   }
   clear = (r, g, b, a) => {
     this.gl.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.gl.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
     this.gl.fillRect(0, 0, this.canvas.width, this.canvas.height);
   };
-  drawScence(x_offset = 0, y_offset = 0) {
+  drawScence() {
+    let x_offset = this.x_offset;
+    let y_offset = this.y_offset;
     this.gl.clearRect(0, 0, this.canvas.width, this.canvas.height);
     let image = document.getElementById("source");
     let text = document.getElementById("text");
@@ -49,7 +55,7 @@ class GLCommander {
       }
       stringArr.push(string);
       for (let i = 0; i < stringArr.length; i++) {
-        this.drawText(stringArr[i], textBox.x, textBox.y + fontSize * (i + 1));
+        this.drawText(stringArr[i], this.x_text, this.y_text + fontSize * (i + 1));
       }
       for (let i = 0; i < dataArray.length; i++) {
         let newCanvas = document.createElement("canvas");
@@ -65,8 +71,8 @@ class GLCommander {
         );
         let fontSize = this.textSize;
         let textBox = {
-          x: x_offset,
-          y: y_offset,
+          x: this.x_text,
+          y: this.y_text,
           width: this.canvas.width,
           height: this.canvas.height,
         };
@@ -85,12 +91,11 @@ class GLCommander {
         }
         stringArr.push(string);
         for (let i = 0; i < stringArr.length; i++) {
-
           newGl.font = `${this.textSize}px ${this.font}`;
           newGl.fillText(
             stringArr[i],
-            textBox.x,
-            textBox.y + fontSize * (i + 1)
+            this.x_text,
+            this.y_text + fontSize * (i + 1)
           );
         }
         canvasList.push(newCanvas.toDataURL());
@@ -111,14 +116,23 @@ class GLCommander {
   };
   setFont = (font) => {
     this.font = font;
-  }
+  };
   drawText(text, x, y) {
+    console.log("x, y", x, y)
     this.gl.font = `${this.textSize}px ${this.font}`;
     this.gl.fillText(text, x, y);
   }
   setSize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
+  }
+  setCoordinate(x, y) {
+    this.x_offset = x;
+    this.y_offset = y;
+  }
+  setTextCoordinate(x, y) {
+    this.x_text = x;
+    this.y_text = y;
   }
 }
 const GLC = new GLCommander();

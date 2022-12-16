@@ -13,6 +13,10 @@ const Controller = ({
   OnChangeTextSize = () => {},
   font,
   OnChangeFont = () => {},
+  x,
+  OnChangeX = () => {},
+  y,
+  OnChangeY = () => {},
 }) => {
   const FONTS = [
     "Arial",
@@ -125,6 +129,33 @@ const Controller = ({
           );
         })}
       </DropdownButton>
+      <Label>X TEXT</Label>
+      <InputWrapper>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={x}
+          onChange={(e) => {
+            OnChangeX(e.target.value);
+          }}
+        />
+        <label>{x}</label>
+      </InputWrapper>
+
+      <Label>Y TEXT</Label>
+      <InputWrapper>
+        <input
+          type="range"
+          min={0}
+          max={10}
+          value={y}
+          onChange={(e) => {
+            OnChangeY(e.target.value);
+          }}
+        />
+        <label>{y}</label>
+      </InputWrapper>
     </div>
   );
 };

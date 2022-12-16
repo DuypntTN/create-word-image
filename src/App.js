@@ -43,6 +43,8 @@ const App = () => {
   const [font, setFont] = useState("Arial");
   const [text, setText] = useState(undefined);
   const [textSize, setTextSize] = useState(undefined);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
   useEffect(() => {
     const img = document.getElementById("source");
     img.onload = () => {
@@ -64,11 +66,20 @@ const App = () => {
   }, [font]);
   useEffect(() => {
     Update();
-  }, [font, text, textSize, src]);
+  }, [font, text, textSize, src, x, y]);
+  useEffect(() => {
+    GLC.setTextCoordinate(x, y);
+  }, [x, y]);
   return (
     <AppWrapper>
       <Title>Text to image</Title>
       <Container>
+        <ImportText
+          OnChangeText={(text) => {
+            setText(text);
+          }}
+          text={text}
+        />
         <Controller
           OnChangBackground={(image) => {
             setSrc(image);
@@ -83,14 +94,17 @@ const App = () => {
             console.log("font", font);
             setFont(font);
           }}
-        />
-        <ImportText
-          OnChangeText={(text) => {
-            setText(text);
+          OnChangeX={(x) => {
+            setX(x);
           }}
-          text={text}
+          OnChangeY={(y) => {
+            setY(y);
+          }}
+          x={x}
+          y={y}
         />
-        <ImagePreview image={src}  />
+
+        <ImagePreview image={src} />
         <WebGL width={width} height={height} />
         <Button
           variant={ableToSave ? "secondary" : "primary"}

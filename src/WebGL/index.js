@@ -12,7 +12,7 @@ const WebGL = ({ width = 0, height = 0 }) => {
     <div
       style={{
         width: 500,
-        height: 'auto',
+        height: 500,
         overflowY: "auto",
         alignSelf: "center",
       }}
